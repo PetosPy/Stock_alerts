@@ -2,7 +2,7 @@ import requests
 from twilio.rest import Client
 from newsapi import NewsApiClient
 
-newsapi = NewsApiClient(api_key='72576d178c2f44f0a04211486390b677')
+newsapi = NewsApiClient(api_key='72576d178c2f44f0a04211486')
 
 alphavantage_api= "Your key"
 
