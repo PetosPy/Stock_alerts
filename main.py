@@ -4,7 +4,7 @@ from newsapi import NewsApiClient
 
 newsapi = NewsApiClient(api_key='72576d178c2f44f0a04211486390b677')
 
-alphavantage_api= "2P8E8SNYE4ERK4I6"
+alphavantage_api= "Your key"
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
