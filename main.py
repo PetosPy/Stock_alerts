@@ -1,10 +1,16 @@
 import requests
 from twilio.rest import Client
 from newsapi import NewsApiClient
+import math 
+import os
 
-newsapi = NewsApiClient(api_key='72576d178c2f44f0a04211486390b677')
+account_sid = os.environ.get("TWILIO_ACC_SID")
+auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
+twilio_number = os.environ.get("TWILIO_NUMBER")
+my_number = os.environ.get("MY_NUMBER")
 
-alphavantage_api= "2P8E8SNYE4ERK4I6"
+alphavantage_api = os.environ.get("ALPHAVANTAGE_API")
+news_api = os.environ.get("NEWS_API")
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
@@ -14,35 +20,53 @@ NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 stock_parameteres = {"function":"TIME_SERIES_DAILY", "symbol": STOCK, "apikey": alphavantage_api}
 
 response = requests.get(STOCK_ENDPOINT, stock_parameteres)
+response.raise_for_status()
 data = response.json()
 previous_day = float(data["Time Series (Daily)"]['2021-05-17']['4. close'])
 current_day = float(data["Time Series (Daily)"]['2021-05-18']['4. close'])
-print(previous_day)
-print(current_day)
-
-print(previous_day - current_day)
-
-## STEP 1: Use https://newsapi.org/docs/endpoints/everything
-# When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
-#HINT 1: Get the closing price for yesterday and the day before yesterday. Find the positive difference between the two prices. e.g. 40 - 20 = -20, but the positive difference is 20.
-#HINT 2: Work out the value of 5% of yerstday's closing stock price. 
 
 
 
-## STEP 2: Use https://newsapi.org/docs/endpoints/everything
-# Instead of printing ("Get News"), actually fetch the first 3 articles for the COMPANY_NAME. 
-#HINT 1: Think about using the Python Slice Operator
+def sender(*messages):
+	for x in messages:
+		client = Client(account_sid, auth_token)
+		message = client.messages.create(body=f"{x}", from_=twilio_number, to=my_number)
+		print(message.status)
 
 
+difference = current_day - previous_day
+increased = round((100 / current_day) * difference) 
+	
+if increased > 5:
+	news_parameteres = {"q": COMPANY_NAME, "from": "2021-05-18", "to" : "2021-05-18", "sortBy": "popularity", "apiKey": news_api }
+	news_response = requests.get(NEWS_ENDPOINT, news_parameteres)
+	news_response.raise_for_status()
+	data = news_response.json()
+
+
+	title_1 = data["articles"][0]["title"]
+	descr_1 = data["articles"][0]["description"]
+	article_1 = f"{title_1}\n\n{descr_1}"
+
+	title_2 = data["articles"][1]["title"]
+	descr_2 = data["articles"][1]["description"]
+	article_2 = f"{title_2}\n\n{descr_2}"
+
+	title_3 = data["articles"][2]["title"]
+	descr_3 = data["articles"][2]["description"]
+	article_3 = f"{title_3}\n\n{descr_3}"
+
+	sender(article_1, article_2, article_3)
+
+else:
+	print("Not much has changed")
 
 ## STEP 3: Use twilio.com/docs/sms/quickstart/python
 # Send a separate message with each article's title and description to your phone number. 
 #HINT 1: Consider using a List Comprehension.
 
 #----------------twilio ----------
-# client = Client(account_sid, auth_token)
-# message = client.messages.create(body="It is going to rain today hey ☂️.", from_='+19032010801', to='+5521969920545')
-# print(message.status)
+
 
 
 
