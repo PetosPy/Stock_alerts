@@ -4,6 +4,7 @@ from newsapi import NewsApiClient
 import math 
 import os
 
+<<<<<<< HEAD
 account_sid = os.environ.get("TWILIO_ACC_SID")
 auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
 twilio_number = os.environ.get("TWILIO_NUMBER")
@@ -11,6 +12,11 @@ my_number = os.environ.get("MY_NUMBER")
 
 alphavantage_api = os.environ.get("ALPHAVANTAGE_API")
 news_api = os.environ.get("NEWS_API")
+=======
+newsapi = NewsApiClient(api_key='72576d178c2f44f0a04211486')
+
+alphavantage_api= "Your key"
+>>>>>>> 5bf4a2a73be18f4c96742983a76f87f8d08537eb
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
